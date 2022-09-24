@@ -24,9 +24,10 @@ public class Commit {
 	private String date;//EX FORMAT: 2022-09-17
 
 	//String tree = tree name, should be sha1 or name of the file
-	public Commit(String tree, String sum, String auth, String par) throws IOException {//par and tree should just be sha1
+	public Commit(String ptree, String sum, String auth, String par) throws IOException {//par and tree should just be sha1
 		
-		this.pTree = tree;
+		this.pTree = ptree;
+		
 		this.summary = sum;
 		this.author = auth;
 		this.date = "" + java.time.LocalDate.now();
@@ -57,6 +58,10 @@ public class Commit {
 			pWriter.close();
 		}
 	}
+	
+//	private void createTree () {
+//		Tree tree = new Tree ();
+//	}
 	
 	private void writeToFile() throws IOException {
 		File f = new File("Test/Objects/" + commitName);
