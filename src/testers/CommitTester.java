@@ -23,10 +23,10 @@ class CommitTester {
 
 	@Test
 	void initTest() throws IOException {
-		Commit commit = new Commit("sha1","This is a summary","Matthew Ko",null);		
-		Commit child = new Commit("sha11","This is the second summary","Steven Ko",commit.getCommitName());
+		Commit commit = new Commit("This is a summary","Matthew Ko",null);		
+		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
 		commit.setChild(child);
-		Commit secondChild = new Commit("sha111","This is the third summary","Christian Bach",child.getCommitName());
+		Commit secondChild = new Commit("This is the third summary","Christian Bach",child.getCommitName());
 		child.setChild(secondChild);
 		
 		File commitFile = new File("Test/Objects/9d6fe9385fb99850c0642cbe8f9b55e753ce2cdd");

@@ -7,7 +7,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 
 public class Tree {
-	
+	private String sha;
 	public Tree (ArrayList <String> arr) throws IOException {
 		writingToFile(arr,generateAll(arr)); 
 	}
@@ -22,6 +22,10 @@ public class Tree {
 		
 	}
 	
+	public String returnSHA () {
+		return sha;
+	}
+	
 	public String sha1 (String input) {
 		String value = input;
 		String sha1 = "";
@@ -33,7 +37,7 @@ public class Tree {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-
+		sha = sha1;
 		return sha1;
 	}
 	

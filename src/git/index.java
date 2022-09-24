@@ -34,7 +34,7 @@ public class index {
 			alreadyIndexed+=s.nextLine() + "\n";
 		}
 		FileWriter fw = new FileWriter(indexFile);
-		fw.append(alreadyIndexed+ fileName + " : " + sha);
+		fw.append(alreadyIndexed+ "blob" + " : " + sha + " " + fileName);
 		
 		fw.close();
 		}

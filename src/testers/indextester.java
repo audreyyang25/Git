@@ -16,11 +16,11 @@ public class indextester {
 		index.add("foobar.txt");
 		index.add("anything");
 		
-		index.remove("foo.txt");
-		index.remove("bar.txt");
-		index.remove("foobar.txt");
-		index.remove("Stuff.txt");
-		index.remove("bro");
+//		index.remove("foo.txt");
+//		index.remove("bar.txt");
+//		index.remove("foobar.txt");
+//		index.remove("Stuff.txt");
+//		index.remove("bro");
 		
 	}
 }

@@ -1,12 +1,15 @@
 package git;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Commit {
@@ -24,9 +27,10 @@ public class Commit {
 	private String date;//EX FORMAT: 2022-09-17
 
 	//String tree = tree name, should be sha1 or name of the file
-	public Commit(String ptree, String sum, String auth, String par) throws IOException {//par and tree should just be sha1
-		
-		this.pTree = ptree;
+	public Commit(String sum, String auth, String par) throws IOException {//par and tree should just be sha1
+		ArrayList <String> list = this.createArrayList();
+		Tree tree = new Tree (list);
+		pTree = tree.returnSHA();
 		
 		this.summary = sum;
 		this.author = auth;
@@ -57,18 +61,43 @@ public class Commit {
 			pWriter.append(firstHalf + "Object/" + this.commitName + "\n" + secondHalf);//appends name, parent, then child + new line, then second half
 			pWriter.close();
 		}
+		
+		File index = new File ("Test/index");
+		index.delete();
 	}
 	
+	private ArrayList <String> createArrayList () throws IOException {
+		ArrayList <String> list = new ArrayList <String> ();
+		if (parent != null) {
+			File parentF = new File (parent);
+			BufferedReader br = new BufferedReader(new FileReader(parentF)); 
+			String line = br.readLine();
+			br.close();
+			list.add("tree : " + line.substring(8));
+		}
+		
+		File indexF = new File ("Test/index");
+		BufferedReader br2 = new BufferedReader(new FileReader(indexF)); 
+		String indexLine = br2.readLine();
+		while (indexLine != null) {
+			list.add(indexLine);
+			indexLine = br2.readLine();
+		}
+		br2.close();
+		
+		return list;
+	}
 //	private void createTree () {
 //		Tree tree = new Tree ();
 //	}
 	
+	
 	private void writeToFile() throws IOException {
 		File f = new File("Test/Objects/" + commitName);
 		FileWriter writer = new FileWriter(f);
-		writer.append("Object/" + commitName + "\n");
+		writer.append("Objects/" + commitName + "\n");
 		if (parent!=null) {
-			writer.append("Object/" + parent + "\n");	
+			writer.append("Objects/" + parent + "\n");	
 		}
 		else {
 			writer.append("\n");
@@ -86,6 +115,7 @@ public class Commit {
 	
 	public String getpTree() {
 		return pTree;
+		
 	}
 	
 	public String getCommitName() {
@@ -123,10 +153,10 @@ public class Commit {
 	}
 	
 	public static void main (String [] args) throws IOException {
-		Commit commit = new Commit("sha1","This is a summary","Matthew Ko",null);		
-		Commit child = new Commit("sha11","This is the second summary","Steven Ko",commit.getCommitName());
+		Commit commit = new Commit("This is a summary","Matthew Ko",null);		
+		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
 		commit.setChild(child);
-		Commit secondChild = new Commit("sha111","This is the third summary","Christian Bach",child.getCommitName());
+		Commit secondChild = new Commit("This is the third summary","Christian Bach",child.getCommitName());
 		child.setChild(secondChild);
 	}
 	
