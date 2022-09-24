@@ -20,7 +20,7 @@ public class CommitTest {
 		index index2 = new index ();
 		index2.init();
 		
-		index2.add("oneMore");
+		index.add("oneMore");
 		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
 		commit.setChild(child);
 

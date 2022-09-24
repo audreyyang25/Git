@@ -28,10 +28,6 @@ public class Commit {
 
 	//String tree = tree name, should be sha1 or name of the file
 	public Commit(String sum, String auth, String par) throws IOException {//par and tree should just be sha1
-		ArrayList <String> list = this.createArrayList();
-		Tree tree = new Tree (list);
-		pTree = tree.returnSHA();
-		
 		this.summary = sum;
 		this.author = auth;
 		this.date = "" + java.time.LocalDate.now();
@@ -43,9 +39,6 @@ public class Commit {
 			hasParent = true;//later in constructor need to set parent child to this commitName
 		}
 		this.commitName = getSha1();
-		
-		//write to the current file: 
-		writeToFile();
 		
 		if (hasParent) {
 			Scanner parentScanner = new Scanner (new File("Test/Objects/" + par));
@@ -62,14 +55,21 @@ public class Commit {
 			pWriter.close();
 		}
 		
+		ArrayList <String> list = this.createArrayList();
+		Tree tree = new Tree (list);
+		pTree = tree.returnSHA();
+		//write to the current file: 
+		writeToFile();
 		File index = new File ("Test/index");
 		index.delete();
+		
+		System.out.println (this.commitName);
 	}
 	
 	private ArrayList <String> createArrayList () throws IOException {
 		ArrayList <String> list = new ArrayList <String> ();
 		if (parent != null) {
-			File parentF = new File (parent);
+			File parentF = new File ("Test/Objects/"+ parent);
 			BufferedReader br = new BufferedReader(new FileReader(parentF)); 
 			String line = br.readLine();
 			br.close();
@@ -95,7 +95,7 @@ public class Commit {
 	private void writeToFile() throws IOException {
 		File f = new File("Test/Objects/" + commitName);
 		FileWriter writer = new FileWriter(f);
-		writer.append("Objects/" + commitName + "\n");
+		writer.append("Objects/" + pTree + "\n");
 		if (parent!=null) {
 			writer.append("Objects/" + parent + "\n");	
 		}
@@ -143,7 +143,7 @@ public class Commit {
 	
 	public String toString() {
 		String str = "";
-		str += commitName + "\n";
+		str += pTree + "\n";
 		str += parent + "\n";
 		str += child + "\n";
 		str += author + "\n";
@@ -152,12 +152,12 @@ public class Commit {
 		return str;
 	}
 	
-	public static void main (String [] args) throws IOException {
-		Commit commit = new Commit("This is a summary","Matthew Ko",null);		
-		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
-		commit.setChild(child);
-		Commit secondChild = new Commit("This is the third summary","Christian Bach",child.getCommitName());
-		child.setChild(secondChild);
-	}
+//	public static void main (String [] args) throws IOException {
+//		Commit commit = new Commit("This is a summary","Matthew Ko",null);		
+//		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
+//		commit.setChild(child);
+//		Commit secondChild = new Commit("This is the third summary","Christian Bach",child.getCommitName());
+//		child.setChild(secondChild);
+//	}
 	
 }
