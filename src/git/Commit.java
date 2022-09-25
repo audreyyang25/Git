@@ -2,6 +2,7 @@ package git;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,8 +26,11 @@ public class Commit {
 	private String summary;
 	private String author;
 	private String date;//EX FORMAT: 2022-09-17
+	
+	private ArrayList <String> list;
 
 	//String tree = tree name, should be sha1 or name of the file
+	//figure out how to set child
 	public Commit(String sum, String auth, String par) throws IOException {//par and tree should just be sha1
 		this.summary = sum;
 		this.author = auth;
@@ -55,7 +59,10 @@ public class Commit {
 			pWriter.close();
 		}
 		
-		ArrayList <String> list = this.createArrayList();
+		// how do I set the tree to the one with deleted info?
+		if (list == null) {
+			list = this.createArrayList();
+		}
 		Tree tree = new Tree (list);
 		pTree = tree.returnSHA();
 		//write to the current file: 
@@ -66,6 +73,47 @@ public class Commit {
 		System.out.println (this.commitName);
 	}
 	
+	public ArrayList <String> delete (String sha) throws IOException {
+		File treeF = new File ("Test/Objects/" + pTree);
+		ArrayList <String> pointers = new ArrayList <String> ();
+		boolean foundSHA = false;
+		String previousTree = "";
+		while (foundSHA != true) {
+			BufferedReader br = new BufferedReader(new FileReader(treeF)); 
+			
+			String line = br.readLine();
+			if (line.contains("tree")) {
+				previousTree = line;
+			}
+			else {
+				previousTree = null;
+			}
+			while (line != null && !line.contains(sha)) {
+				if (!line.contains("tree")) {
+					pointers.add(line);
+				}
+				line = br.readLine();
+			}
+			if (line == null) {
+				treeF = new File ("Test/Objects/" + previousTree.substring(7));
+			}
+			else if (line.contains(sha)) {
+				pointers.add("*deleted*" + " " + line.substring(48));
+				if (previousTree != null) {
+					pointers.add(previousTree);
+				}
+				line = br.readLine();
+				while (line != null) {
+					pointers.add(line);
+					line = br.readLine();
+				}
+				foundSHA = true;
+			}
+			br.close();
+		}
+		return pointers;
+		
+	}
 	private ArrayList <String> createArrayList () throws IOException {
 		ArrayList <String> list = new ArrayList <String> ();
 		if (parent != null) {
@@ -87,6 +135,7 @@ public class Commit {
 		
 		return list;
 	}
+	
 //	private void createTree () {
 //		Tree tree = new Tree ();
 //	}
