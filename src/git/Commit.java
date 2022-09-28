@@ -26,6 +26,7 @@ public class Commit {
 	private String summary;
 	private String author;
 	private String date;//EX FORMAT: 2022-09-17
+	private static File HEAD;
 	
 	private ArrayList <String> list;
 
@@ -59,20 +60,21 @@ public class Commit {
 			pWriter.close();
 		}
 		
-		// how do I set the tree to the one with deleted info?
+		// how do I set the tree to the one with deleted info? in order to get updated index, do you need to call constructor again?
 		if (list == null) {
 			list = this.createArrayList();
 		}
 		Tree tree = new Tree (list);
 		pTree = tree.returnSHA();
 		//write to the current file: 
-		writeToFile();
+		HEAD = writeToFile();
 		File index = new File ("Test/index");
 		index.delete();
 		
 		System.out.println (this.commitName);
 	}
 	
+	// is it allowed to take in stuff? or do we have to figure out if it was deleted or edited?
 	public ArrayList <String> delete (String sha) throws IOException {
 		File treeF = new File ("Test/Objects/" + pTree);
 		ArrayList <String> pointers = new ArrayList <String> ();
@@ -141,7 +143,7 @@ public class Commit {
 //	}
 	
 	
-	private void writeToFile() throws IOException {
+	private File writeToFile() throws IOException {
 		File f = new File("Test/Objects/" + commitName);
 		FileWriter writer = new FileWriter(f);
 		writer.append("Objects/" + pTree + "\n");
@@ -156,6 +158,7 @@ public class Commit {
 		writer.append(date + "\n");
 		writer.append(summary);
 		writer.close();
+		return f;
 	}
 	
 	private String getDate() {
