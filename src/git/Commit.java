@@ -14,21 +14,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Commit {
-	
+
 	private String child = "";
 	private String parent;
-	
+
 	private String commitName = "";
-	
+
 	private String pTree;//sha1 name of the file 
-	
-	
+	private String parentTree;
+
 	private String summary;
 	private String author;
 	private String date;//EX FORMAT: 2022-09-17
-	private static File HEAD;
-	
-	private ArrayList <String> list;
+	private static File HEAD = new File ("Test/HEAD");
+
+	private ArrayList <String> list = new ArrayList <String> ();
 
 	//String tree = tree name, should be sha1 or name of the file
 	//figure out how to set child
@@ -44,11 +44,12 @@ public class Commit {
 			hasParent = true;//later in constructor need to set parent child to this commitName
 		}
 		this.commitName = getSha1();
-		
+
 		if (hasParent) {
 			Scanner parentScanner = new Scanner (new File("Test/Objects/" + par));
 			String firstHalf = "";
-			firstHalf+=parentScanner.nextLine() + "\n";//intakes the parent name
+			parentTree = parentScanner.nextLine();
+			firstHalf+=parentTree + "\n";//intakes the parent tree
 			firstHalf+=parentScanner.nextLine() + "\n";//intakes parent's parent name
 			parentScanner.nextLine();//skips the empty line bc has no child before this one
 			String secondHalf = "";
@@ -59,64 +60,129 @@ public class Commit {
 			pWriter.append(firstHalf + "Object/" + this.commitName + "\n" + secondHalf);//appends name, parent, then child + new line, then second half
 			pWriter.close();
 		}
-		
-		// how do I set the tree to the one with deleted info? in order to get updated index, do you need to call constructor again?
-		if (list == null) {
-			list = this.createArrayList();
+
+		//look through index for deleted/edited
+		File index = new File ("Test/index");
+		BufferedReader br = new BufferedReader(new FileReader(index)); 
+		ArrayList <String> toDelete = new ArrayList <String> ();
+		String line = br.readLine();
+		boolean hasDeleted = false;
+		while (line != null) {
+			if (line.contains("*deleted*")) {
+				toDelete.add(line.substring(10));
+				hasDeleted = true;
+			}
+			else if (line.contains("*edited*")) {
+				toDelete.add(line.substring(9));
+				hasDeleted = true;
+			}
+			else {
+				list.add(line);
+				System.out.println (line);
+			}
+			line = br.readLine();
 		}
+		// how do I set the tree to the one with deleted info? in order to get updated index, do you need to call constructor again?
+		if (hasDeleted == false) {
+			this.addTreeParent();
+		}
+		else {
+			File treeF = new File ("Test/" + parentTree);
+			this.delete(toDelete, treeF);
+			for (String obj : list) {
+				System.out.println (obj);
+			}
+		}
+
 		Tree tree = new Tree (list);
 		pTree = tree.returnSHA();
 		//write to the current file: 
-		HEAD = writeToFile();
-		File index = new File ("Test/index");
-		index.delete();
-		
+		writeToFile();
+		FileWriter wr = new FileWriter(HEAD);
+		wr.flush();
+		wr.append("Test/Objects/" + this.getCommitName ());
+		wr.close();
+
+		FileWriter writer = new FileWriter(index);
+		writer.flush();
+
 		System.out.println (this.commitName);
 	}
-	
-	// is it allowed to take in stuff? or do we have to figure out if it was deleted or edited?
-	public ArrayList <String> delete (String sha) throws IOException {
-		File treeF = new File ("Test/Objects/" + pTree);
-		ArrayList <String> pointers = new ArrayList <String> ();
-		boolean foundSHA = false;
+
+	public void delete (ArrayList <String> arr, File treeF) throws IOException {
 		String previousTree = "";
-		while (foundSHA != true) {
-			BufferedReader br = new BufferedReader(new FileReader(treeF)); 
-			
-			String line = br.readLine();
-			if (line.contains("tree")) {
-				previousTree = line;
-			}
-			else {
-				previousTree = null;
-			}
-			while (line != null && !line.contains(sha)) {
-				if (!line.contains("tree")) {
-					pointers.add(line);
-				}
-				line = br.readLine();
-			}
-			if (line == null) {
-				treeF = new File ("Test/Objects/" + previousTree.substring(7));
-			}
-			else if (line.contains(sha)) {
-				pointers.add("*deleted*" + " " + line.substring(48));
-				if (previousTree != null) {
-					pointers.add(previousTree);
-				}
-				line = br.readLine();
-				while (line != null) {
-					pointers.add(line);
-					line = br.readLine();
-				}
-				foundSHA = true;
-			}
-			br.close();
+
+		BufferedReader br = new BufferedReader(new FileReader(treeF)); 
+
+		String line = br.readLine();
+		if (line.contains("tree")) {
+			previousTree = line;
 		}
-		return pointers;
-		
+		while (line != null && !arr.isEmpty()) {
+			for (int i=0; i<arr.size(); i++) {
+				if (!line.contains(arr.get(i))) {
+					list.add(line);
+
+				}
+				else {
+					arr.remove(i);
+					i--;
+				}
+				line = br.readLine();
+			}
+		}
+		if (!arr.isEmpty()) {
+			File newF = new File ("Test/Objects/" + previousTree.substring(7));
+			this.delete(arr, newF);
+
+		}
+		else {
+			list.add(previousTree);
+		}
+
+		//		while (foundSHA != true) {
+		//			BufferedReader br = new BufferedReader(new FileReader(treeF)); 
+		//			
+		//			String line = br.readLine();
+		//			if (line.contains("tree")) {
+		//				previousTree = line;
+		//			}
+		//			else {
+		//				previousTree = null;
+		//			}
+		//			
+		//			while (line != null) {
+		//				for (String fileName : arr) {
+		//					if (!line.contains(fileName)) {
+		//						if (!line.contains("tree")) {
+		//							list.add(line);
+		//						}
+		//						line = br.readLine();
+		//					}
+		//					else if (line.contains(fileName)) {
+		//						if (previousTree != null) {
+		//							list.add(previousTree);
+		//						}
+		//						line = br.readLine();
+		//						while (line != null) {
+		//							list.add(line);
+		//							line = br.readLine();
+		//						}
+		//						foundSHA = true;
+		//					}
+		//					}
+		//				}
+		//			if (line == null) {
+		//				treeF = new File ("Test/Objects/" + previousTree.substring(7));
+		//			}
+		//			
+		//			br.close();
+		//		}
+		//		return pointers;
 	}
-	private ArrayList <String> createArrayList () throws IOException {
+
+
+	private void addTreeParent () throws IOException {
 		ArrayList <String> list = new ArrayList <String> ();
 		if (parent != null) {
 			File parentF = new File ("Test/Objects/"+ parent);
@@ -125,24 +191,9 @@ public class Commit {
 			br.close();
 			list.add("tree : " + line.substring(8));
 		}
-		
-		File indexF = new File ("Test/index");
-		BufferedReader br2 = new BufferedReader(new FileReader(indexF)); 
-		String indexLine = br2.readLine();
-		while (indexLine != null) {
-			list.add(indexLine);
-			indexLine = br2.readLine();
-		}
-		br2.close();
-		
-		return list;
 	}
-	
-//	private void createTree () {
-//		Tree tree = new Tree ();
-//	}
-	
-	
+
+
 	private File writeToFile() throws IOException {
 		File f = new File("Test/Objects/" + commitName);
 		FileWriter writer = new FileWriter(f);
@@ -160,39 +211,39 @@ public class Commit {
 		writer.close();
 		return f;
 	}
-	
+
 	private String getDate() {
 		return date;
 	}
-	
+
 	public String getpTree() {
 		return pTree;
-		
+
 	}
-	
+
 	public String getCommitName() {
 		return this.commitName;
 	}
-	
+
 	public void setChild(Commit child) {
 		this.child = child.getCommitName();
 	}
-	
+
 	private String getSha1 () {
 		String value = "" + summary + date + author + parent;
 		String sha1 = "";
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
-	        digest.reset();
-	        digest.update(value.getBytes("utf8"));
-	        sha1 = String.format("%040x", new BigInteger(1, digest.digest()));
+			digest.reset();
+			digest.update(value.getBytes("utf8"));
+			sha1 = String.format("%040x", new BigInteger(1, digest.digest()));
 		} catch (Exception e){
 			e.printStackTrace();
 		}
 
 		return sha1;
 	}
-	
+
 	public String toString() {
 		String str = "";
 		str += pTree + "\n";
@@ -203,13 +254,5 @@ public class Commit {
 		str += summary + "\n";
 		return str;
 	}
-	
-//	public static void main (String [] args) throws IOException {
-//		Commit commit = new Commit("This is a summary","Matthew Ko",null);		
-//		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
-//		commit.setChild(child);
-//		Commit secondChild = new Commit("This is the third summary","Christian Bach",child.getCommitName());
-//		child.setChild(secondChild);
-//	}
-	
+
 }

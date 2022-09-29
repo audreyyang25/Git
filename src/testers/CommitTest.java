@@ -15,23 +15,28 @@ public class CommitTest {
 		// make blobs
 		index.add("foo.txt");
 		index.add("Stuff.txt");
-		index.add("bar.txt");
-		index.add("foobar.txt");
-		index.add("anything");
 		
 		//commit
 		Commit commit = new Commit("This is a summary","Matthew Ko",null);	
 		
-		index.init();
 		index.add("oneMore");
 		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
 		commit.setChild(child);
 		
+		index.add("bar.txt");
+		index.add("foobar.txt");
+		index.add("anything");
+		Commit child2 = new Commit ("This is third commit", "Audrey Yang", child.getCommitName());
+		child.setChild(child2);
 		
-//		ArrayList <String> list = child.delete ("f8ba7f8d26bae87b4d558f0e80eb3ff84da85f41");
-//		for (String i : list) {
-//			System.out.println(i);
-//		}
+		index.delete("bar.txt");
+		System.out.println ("deleted");
+		Commit four = new Commit ("fourth", "Audrey", child2.getCommitName());
+		child2.setChild(four);
+		
+		// deleting things:
+		//index file now stores *deleted* filename
+		//tree points to one blob
 		
 	}
 

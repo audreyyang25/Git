@@ -62,6 +62,16 @@ public class index {
 		fw.close();
 	}
 	
+	public void delete (String fileName) throws IOException {
+		FileWriter fw = new FileWriter(indexFile);
+		fw.append("*deleted* " + fileName);
+		fw.close();
+	}
 	
+	public void edit (String fileName) throws IOException {
+		FileWriter fw = new FileWriter(indexFile);
+		fw.append("*edited* " + fileName);
+		fw.close();
+	}
 	
 }
