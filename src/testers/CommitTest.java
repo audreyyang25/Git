@@ -37,6 +37,7 @@ public class CommitTest {
 		Commit four = new Commit ("fourth", "Audrey", child2.getCommitName());
 		child2.setChild(four);
 		
+		
 		// deleting things:
 		//index file now stores *deleted* filename
 		//tree points to one blob

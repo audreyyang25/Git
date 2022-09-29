@@ -123,10 +123,16 @@ public class Commit {
 		BufferedReader br = new BufferedReader(new FileReader(treeF)); 
 
 		String line = br.readLine();
-		if (line.contains("tree")) {
-			previousTree = line;
-		}
+		
 		while (line != null) {
+			System.out.println (line);
+			if (line.contains("tree")) {
+				previousTree = line;
+				System.out.println ("previous tree: " + line);
+			}
+			else if (arr.size()==0) {
+				list.add(line);
+			}
 			for (int i=0; i<arr.size(); i++) {
 				if (!line.contains(arr.get(i))) {
 					list.add(line);
@@ -136,8 +142,8 @@ public class Commit {
 					arr.remove(i);
 					i--;
 				}
-				line = br.readLine();
 			}
+			line = br.readLine();
 		}
 		if (!arr.isEmpty()) {
 			File newF = new File ("Test/Objects/" + previousTree.substring(7));
