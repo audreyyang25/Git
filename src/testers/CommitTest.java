@@ -18,10 +18,12 @@ public class CommitTest {
 		
 		//commit
 		Commit commit = new Commit("This is a summary","Matthew Ko",null);	
+		System.out.println ();
 		
 		index.add("oneMore");
 		Commit child = new Commit("This is the second summary","Steven Ko",commit.getCommitName());
 		commit.setChild(child);
+		System.out.println ();
 		
 		index.add("bar.txt");
 		index.add("foobar.txt");
@@ -29,8 +31,9 @@ public class CommitTest {
 		Commit child2 = new Commit ("This is third commit", "Audrey Yang", child.getCommitName());
 		child.setChild(child2);
 		
+		System.out.println ();
 		index.delete("bar.txt");
-		System.out.println ("deleted");
+//		System.out.println ("deleted");
 		Commit four = new Commit ("fourth", "Audrey", child2.getCommitName());
 		child2.setChild(four);
 		

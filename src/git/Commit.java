@@ -57,40 +57,48 @@ public class Commit {
 			secondHalf+=parentScanner.nextLine() + "\n";//gets date
 			secondHalf+=parentScanner.nextLine() + "\n";//gets summary
 			FileWriter pWriter = new FileWriter(parentFile);
-			pWriter.append(firstHalf + "Object/" + this.commitName + "\n" + secondHalf);//appends name, parent, then child + new line, then second half
+			pWriter.append(firstHalf + "Objects/" + this.commitName + "\n" + secondHalf);//appends name, parent, then child + new line, then second half
 			pWriter.close();
 		}
 
-		//look through index for deleted/edited
+		//look through index for deleted/edited and store in arraylist
 		File index = new File ("Test/index");
 		BufferedReader br = new BufferedReader(new FileReader(index)); 
 		ArrayList <String> toDelete = new ArrayList <String> ();
 		String line = br.readLine();
-		boolean hasDeleted = false;
+		String hasDeleted = "false";
 		while (line != null) {
 			if (line.contains("*deleted*")) {
 				toDelete.add(line.substring(10));
-				hasDeleted = true;
+//				System.out.println (line.substring(10));
+				System.out.println ("delete: " + line);
+				hasDeleted = "true";
 			}
 			else if (line.contains("*edited*")) {
 				toDelete.add(line.substring(9));
-				hasDeleted = true;
+				System.out.println ("edit: " + line);
+				hasDeleted = "true";
 			}
 			else {
 				list.add(line);
-				System.out.println (line);
+				System.out.println ("store: " + line);
 			}
 			line = br.readLine();
 		}
-		// how do I set the tree to the one with deleted info? in order to get updated index, do you need to call constructor again?
-		if (hasDeleted == false) {
+		
+		//add parent tree or delete files
+		if (hasDeleted.equals("false")) {
 			this.addTreeParent();
+			for (String obj : list) {
+				System.out.println ("files in list: " + obj);
+			}
 		}
 		else {
+			System.out.println ("parent tree path: " +  parentTree);
 			File treeF = new File ("Test/" + parentTree);
 			this.delete(toDelete, treeF);
 			for (String obj : list) {
-				System.out.println (obj);
+				System.out.println ("files in list: " + obj);
 			}
 		}
 
@@ -106,7 +114,7 @@ public class Commit {
 		FileWriter writer = new FileWriter(index);
 		writer.flush();
 
-		System.out.println (this.commitName);
+//		System.out.println (this.commitName);
 	}
 
 	public void delete (ArrayList <String> arr, File treeF) throws IOException {
@@ -118,11 +126,11 @@ public class Commit {
 		if (line.contains("tree")) {
 			previousTree = line;
 		}
-		while (line != null && !arr.isEmpty()) {
+		while (line != null) {
 			for (int i=0; i<arr.size(); i++) {
 				if (!line.contains(arr.get(i))) {
 					list.add(line);
-
+					System.out.println ("added when tree traversing: " + line);
 				}
 				else {
 					arr.remove(i);
@@ -134,10 +142,10 @@ public class Commit {
 		if (!arr.isEmpty()) {
 			File newF = new File ("Test/Objects/" + previousTree.substring(7));
 			this.delete(arr, newF);
-
 		}
 		else {
 			list.add(previousTree);
+			System.out.println ("tree parent from traversing: " + previousTree);
 		}
 
 		//		while (foundSHA != true) {
@@ -183,14 +191,32 @@ public class Commit {
 
 
 	private void addTreeParent () throws IOException {
-		ArrayList <String> list = new ArrayList <String> ();
 		if (parent != null) {
+			System.out.println ("got here");
 			File parentF = new File ("Test/Objects/"+ parent);
+			System.out.println (parent);
 			BufferedReader br = new BufferedReader(new FileReader(parentF)); 
 			String line = br.readLine();
-			br.close();
+			br.close ();
+			
 			list.add("tree : " + line.substring(8));
+			System.out.println ("tree : " + line.substring(8));
+//			File treeF = new File ("Test/" + line);
+//			System.out.println ("Test/" + line);
+//			BufferedReader br2 = new BufferedReader(new FileReader(treeF)); 
+//			String line2 = br.readLine();
+//			while (line2 != null ) {
+//				if (line2.contains("tree")) {
+//					list.add("tree : " + line2.substring(8));
+//					System.out.println ("tree pointer: " + line2);
+//				}
+//				else {
+//					line2 = br2.readLine();
+//				}
+//			}
+//			br2.close();
 		}
+		
 	}
 
 

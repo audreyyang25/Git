@@ -57,12 +57,12 @@ public class Blob {
 		this.hashedZip = getSha1(zip());
 		createFileNormal();
 		//createFileZip();
-		System.out.println("File name: " + file);
-		System.out.println("File Contents: " + contents);
-		System.out.println("Sha1 of Contents: " + hashedContents);
-		System.out.println("Zipped Contents: " + zip);
-		System.out.println("Sha1 of Zipped Contents: " + hashedZip);
-		System.out.println();
+//		System.out.println("File name: " + file);
+//		System.out.println("File Contents: " + contents);
+//		System.out.println("Sha1 of Contents: " + hashedContents);
+//		System.out.println("Zipped Contents: " + zip);
+//		System.out.println("Sha1 of Zipped Contents: " + hashedZip);
+//		System.out.println();
 
 	}
 	//method for writing with the zip

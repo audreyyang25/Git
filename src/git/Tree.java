@@ -17,7 +17,7 @@ public class Tree {
 		for(int i =0; i < arr.size(); i++) {
 			str += arr.get(i) + "\n";
 		}
-		System.out.println(sha1(str));
+//		System.out.println(sha1(str));
 		return sha1(str);
 		
 	}
