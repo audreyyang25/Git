@@ -63,15 +63,29 @@ public class index {
 	}
 	
 	public void delete (String fileName) throws IOException {
+		Scanner s = new Scanner(indexFile);
+		String alreadyIndexed = "";
+		while (s.hasNextLine()) {
+			alreadyIndexed+=s.nextLine() + "\n";
+		}
 		FileWriter fw = new FileWriter(indexFile);
-		fw.append("*deleted* " + fileName);
+		fw.append(alreadyIndexed+ "*deleted* " + fileName);
+		
 		fw.close();
+		
 	}
 	
 	public void edit (String fileName) throws IOException {
+		Scanner s = new Scanner(indexFile);
+		String alreadyIndexed = "";
+		while (s.hasNextLine()) {
+			alreadyIndexed+=s.nextLine() + "\n";
+		}
 		FileWriter fw = new FileWriter(indexFile);
-		fw.append("*edited* " + fileName);
+		fw.append(alreadyIndexed+ "*edited* " + fileName);
+		
 		fw.close();
+		
 	}
 	
 }

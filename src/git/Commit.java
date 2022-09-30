@@ -263,6 +263,7 @@ public class Commit {
 
 	private String getSha1 () {
 		String value = "" + summary + date + author + parent;
+		System.out.println ("sha: " + value);
 		String sha1 = "";
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");

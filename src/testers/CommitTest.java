@@ -33,6 +33,8 @@ public class CommitTest {
 		
 		System.out.println ();
 		index.delete("bar.txt");
+		index.edit("oneMore");
+		index.add("oneMore");
 //		System.out.println ("deleted");
 		Commit four = new Commit ("fourth", "Audrey", child2.getCommitName());
 		child2.setChild(four);

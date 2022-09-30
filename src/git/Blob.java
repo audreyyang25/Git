@@ -51,6 +51,7 @@ public class Blob {
 		      e.printStackTrace();
 		    }
 		contents = ret;//contents = what was read in
+//		System.out.println ("contents of file: "+ contents);
 		//HERE WOULD BE: CONTENTS = GETZIP(CONTENTS);
 		hashedContents = getSha1(contents);//call the hash method on the contents(now zipped contents), save it in hashedContents
 		this.zip = zip();
@@ -102,7 +103,7 @@ public class Blob {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-
+//		System.out.println ("sha of file:" +sha1);
 		return sha1;
 	}
 }
