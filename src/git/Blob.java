@@ -74,6 +74,8 @@ public class Blob {
 		writer.append(zip);
 		writer.close();
 	}
+	
+	
 	//method for writing with regular sha1
 	private void createFileNormal () throws IOException{//Goal: create file in the objects folder with a certain name of the hashed contents 
 		File f = new File("Test/Objects/" + hashedContents);//DEPENDENT ON OBJECTS FOLDER NAME = OBJECTS 

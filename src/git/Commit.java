@@ -81,7 +81,7 @@ public class Commit {
 			}
 			else {
 				list.add(line);
-				System.out.println ("store: " + line);
+//				System.out.println ("store: " + line);
 			}
 			line = br.readLine();
 		}
@@ -90,11 +90,11 @@ public class Commit {
 		if (hasDeleted.equals("false")) {
 			this.addTreeParent();
 			for (String obj : list) {
-				System.out.println ("files in list: " + obj);
+//				System.out.println ("files in list: " + obj);
 			}
 		}
 		else {
-			System.out.println ("parent tree path: " +  parentTree);
+//			System.out.println ("parent tree path: " +  parentTree);
 			File treeF = new File ("Test/" + parentTree);
 			this.delete(toDelete, treeF);
 			for (String obj : list) {
@@ -125,7 +125,7 @@ public class Commit {
 		String line = br.readLine();
 		
 		while (line != null) {
-			System.out.println (line);
+//			System.out.println (line);
 			if (line.contains("tree")) {
 				previousTree = line;
 				System.out.println ("previous tree: " + line);
@@ -133,14 +133,18 @@ public class Commit {
 			else if (arr.size()==0) {
 				list.add(line);
 			}
-			for (int i=0; i<arr.size(); i++) {
-				if (!line.contains(arr.get(i))) {
-					list.add(line);
-					System.out.println ("added when tree traversing: " + line);
+			else {
+				boolean notInArray = true;
+				for (int i=0; i<arr.size(); i++) {
+					if (line.contains(arr.get(i))) {
+						arr.remove(i);
+						i--;
+						notInArray = false;
+						System.out.println ("added when tree traversing: " + line);
+					}
 				}
-				else {
-					arr.remove(i);
-					i--;
+				if (notInArray == true) {
+					list.add(line);
 				}
 			}
 			line = br.readLine();
@@ -198,15 +202,15 @@ public class Commit {
 
 	private void addTreeParent () throws IOException {
 		if (parent != null) {
-			System.out.println ("got here");
+//			System.out.println ("got here");
 			File parentF = new File ("Test/Objects/"+ parent);
-			System.out.println (parent);
+//			System.out.println (parent);
 			BufferedReader br = new BufferedReader(new FileReader(parentF)); 
 			String line = br.readLine();
 			br.close ();
 			
 			list.add("tree : " + line.substring(8));
-			System.out.println ("tree : " + line.substring(8));
+//			System.out.println ("tree : " + line.substring(8));
 //			File treeF = new File ("Test/" + line);
 //			System.out.println ("Test/" + line);
 //			BufferedReader br2 = new BufferedReader(new FileReader(treeF)); 
@@ -263,7 +267,7 @@ public class Commit {
 
 	private String getSha1 () {
 		String value = "" + summary + date + author + parent;
-		System.out.println ("sha: " + value);
+//		System.out.println ("sha: " + value);
 		String sha1 = "";
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-1");
