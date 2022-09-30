@@ -34,7 +34,7 @@ public class Blob {
 	private String hashedZip; 
 	
 	public String getHashed() {
-		return hashedZip;
+		return hashedContents;
 	}
 	
 	public Blob (String file) throws IOException {

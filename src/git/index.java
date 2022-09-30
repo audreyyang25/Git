@@ -26,8 +26,9 @@ public class index {
 		File f = new File("Test/" + fileName);
 		if (f.exists()) {
 			
-		Blob b = new Blob("Test/" + fileName);//filename ex = foo.txt
+		Blob b = new Blob ("Test/" + fileName);
 		String sha = b.getHashed();
+//		System.out.println (sha);
 		indexMap.put(fileName, sha);
 		Scanner s = new Scanner(indexFile);
 		String alreadyIndexed = "";
