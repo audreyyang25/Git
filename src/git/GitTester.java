@@ -15,13 +15,13 @@ class GitTester {
 	private static index index;
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
-		GitTester.writeFile ("foo.txt", "foo file");
-		GitTester.writeFile ("bar.txt", "bar file");
-		GitTester.writeFile ("stuff.txt", "stuff file");
-		GitTester.writeFile ("more.txt", "more file");
-		GitTester.writeFile ("another.txt", "another file");
-		GitTester.writeFile ("test.txt", "test file");
-		GitTester.writeFile ("foobar.txt", "foobar file");
+		GitTester.writeFile ("Test/foo.txt", "foo file");
+		GitTester.writeFile ("Test/bar.txt", "bar file");
+		GitTester.writeFile ("Test/stuff.txt", "stuff file");
+		GitTester.writeFile ("Test/more.txt", "more file");
+		GitTester.writeFile ("Test/another.txt", "another file");
+		GitTester.writeFile ("Test/test.txt", "test file");
+		GitTester.writeFile ("Test/foobar.txt", "foobar file");
 		index = new index ();
 		index.init();
 	}
