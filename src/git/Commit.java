@@ -116,7 +116,8 @@ public class Commit {
 
 //		System.out.println (this.commitName);
 	}
-
+	
+	//updates list that is inputed to Tree
 	public void delete (ArrayList <String> arr, File treeF) throws IOException {
 		String previousTree = "";
 
@@ -126,7 +127,7 @@ public class Commit {
 		
 		while (line != null) {
 //			System.out.println (line);
-			if (line.contains("tree")) {
+			if (line.contains("tree :")) {
 				previousTree = line;
 				System.out.println ("previous tree: " + line);
 			}
@@ -136,7 +137,7 @@ public class Commit {
 			else {
 				boolean notInArray = true;
 				for (int i=0; i<arr.size(); i++) {
-					if (line.contains(arr.get(i))) {
+					if (line.substring(48).equals(arr.get(i))) {
 						arr.remove(i);
 						i--;
 						notInArray = false;
@@ -157,46 +158,18 @@ public class Commit {
 			list.add(previousTree);
 			System.out.println ("tree parent from traversing: " + previousTree);
 		}
-
-		//		while (foundSHA != true) {
-		//			BufferedReader br = new BufferedReader(new FileReader(treeF)); 
-		//			
-		//			String line = br.readLine();
-		//			if (line.contains("tree")) {
-		//				previousTree = line;
-		//			}
-		//			else {
-		//				previousTree = null;
-		//			}
-		//			
-		//			while (line != null) {
-		//				for (String fileName : arr) {
-		//					if (!line.contains(fileName)) {
-		//						if (!line.contains("tree")) {
-		//							list.add(line);
-		//						}
-		//						line = br.readLine();
-		//					}
-		//					else if (line.contains(fileName)) {
-		//						if (previousTree != null) {
-		//							list.add(previousTree);
-		//						}
-		//						line = br.readLine();
-		//						while (line != null) {
-		//							list.add(line);
-		//							line = br.readLine();
-		//						}
-		//						foundSHA = true;
-		//					}
-		//					}
-		//				}
-		//			if (line == null) {
-		//				treeF = new File ("Test/Objects/" + previousTree.substring(7));
-		//			}
-		//			
-		//			br.close();
-		//		}
-		//		return pointers;
+	}
+	
+	public void createBranchReference (ArrayList <String> branches) throws IOException {
+		this.writingToFile(branches, "Branches"); 
+	}
+	
+	private void writingToFile (ArrayList <String> arr, String str) throws IOException {
+		FileWriter fw = new FileWriter(new File("Test/Objects/", str));//correct folder, name
+		for(String stringe: arr) {
+		  fw.write(stringe + System.lineSeparator());
+		}
+		fw.close();
 	}
 
 
@@ -210,21 +183,6 @@ public class Commit {
 			br.close ();
 			
 			list.add("tree : " + line.substring(8));
-//			System.out.println ("tree : " + line.substring(8));
-//			File treeF = new File ("Test/" + line);
-//			System.out.println ("Test/" + line);
-//			BufferedReader br2 = new BufferedReader(new FileReader(treeF)); 
-//			String line2 = br.readLine();
-//			while (line2 != null ) {
-//				if (line2.contains("tree")) {
-//					list.add("tree : " + line2.substring(8));
-//					System.out.println ("tree pointer: " + line2);
-//				}
-//				else {
-//					line2 = br2.readLine();
-//				}
-//			}
-//			br2.close();
 		}
 		
 	}
